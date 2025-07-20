@@ -125,3 +125,26 @@ class UserManager:
             return False
         
         return
+
+class AdminManager:
+    def __init__(self):
+        self.db = Database()
+    
+    def authenticate_admin(self, username, password):
+        """Authenticate admin user"""
+        with self.db.get_connection() as conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT * FROM admin_users WHERE username = %s
+                """, (username,))
+                admin = cur.fetchone()
+                
+                if admin and bcrypt.checkpw(password.encode('utf-8'), admin['password_hash'].encode('utf-8')):
+                    # Update last login
+                    cur.execute("""
+                        UPDATE admin_users SET last_login = CURRENT_TIMESTAMP WHERE id = %s
+                    """, (admin['id'],))
+                    conn.commit()
+                    return admin
+                
+                return None
