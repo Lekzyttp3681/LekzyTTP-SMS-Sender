@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥷🏿 Lekzy-TTP 🥷🏿 - SMS Sending Progress</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .sending-container {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            color: #ffffff;
+        }
+        
+        .sending-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .sending-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .sending-subtitle {
+            color: #ffffff;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .total-stat .stat-number { color: #00d4ff; }
+        .success-stat .stat-number { color: #27ae60; }
+        .failed-stat .stat-number { color: #e74c3c; }
+        .pending-stat .stat-number { color: #f39c12; }
+        
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        
+        .sending-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .message-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .message-item.pending {
+            border-left-color: #f39c12;
+            background: rgba(243, 156, 18, 0.1);
+        }
+        
+        .message-item.sending {
+            border-left-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            animation: pulse 1s infinite alternate;
+        }
+        
+        .message-item.success {
+            border-left-color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+        
+        .message-item.failed {
+            border-left-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        @keyframes pulse {
+            from { transform: scale(1); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+            to { transform: scale(1.02); box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+        }
+        
+        .message-info {
+            flex: 1;
+        }
+        
+        .message-phone {
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .message-text {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            max-width: 400px;
+        }
+        
+        .message-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { background: rgba(243, 156, 18, 0.2); color: #f39c12; }
+        .status-sending { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+        .status-success { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
+        .status-failed { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .controls {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(45deg, #0099cc, #007399);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #545b62);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #545b62, #495057);
+        }
+        
+        /* Enhanced Responsive Design */
+        @media (max-width: 480px) {
+            .sending-container {
+                padding: 15px;
+            }
+            
+            .sending-title {
+                font-size: 1.8rem;
+            }
+            
+            .progress-container {
+                padding: 20px;
+            }
+            
+            .progress-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .message-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .message-status {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .message-text {
+                max-width: 100%;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                margin: 5px;
+            }
+        }
+        
+        @media (min-width: 481px) and (max-width: 768px) {
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .message-text {
+                max-width: 300px;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .progress-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .progress-stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .message-text {
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sending-container">
+        <div class="sending-header">
+            <h1 class="sending-title">🥷🏿 Lekzy-TTP 🥷🏿</h1>
+            <p class="sending-subtitle">Wherever You Find Peace..! Make It Home 💟</p>
+            <p class="sending-subtitle">Real-time SMS Sending Progress</p>
+        </div>
+        
+        <div class="progress-container">
+            <!-- Progress Statistics -->
+            <div class="progress-stats">
+                <div class="stat-box total-stat">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Total Messages</div>
+                </div>
+                <div class="stat-box success-stat">
+                    <div class="stat-number" id="successCount">0</div>
+                    <div class="stat-label">Sent Successfully</div>
+                </div>
+                <div class="stat-box failed-stat">
+                    <div class="stat-number" id="failedCount">0</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+                <div class="stat-box pending-stat">
+                    <div class="stat-number" id="pendingCount">0</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%;">0%</div>
+            </div>
+            
+            <!-- Sending List -->
+            <div class="sending-list" id="sendingList">
+                <!-- Messages will be populated here -->
+            </div>
+            
+            <!-- Controls -->
+            <div class="controls">
+                <button id="pauseBtn" class="btn btn-secondary" onclick="pauseSending()" style="display: none;">⏸️ Pause</button>
+                <button id="resumeBtn" class="btn" onclick="resumeSending()" style="display: none;">▶️ Resume</button>
+                <a href="/main_menu" class="btn btn-secondary">🏠 Back to Dashboard</a>
+                <button id="viewResultsBtn" class="btn" onclick="viewResults()" style="display: none;">📊 View Results</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let sendingData = {
+            messages: [],
+            currentIndex: 0,
+            totalCount: 0,
+            successCount: 0,
+            failedCount: 0,
+            isPaused: false,
+            method: '',
+            config: {}
+        };
+        
+        function initializeSending(messages, method, config) {
+            sendingData.messages = messages;
+            sendingData.totalCount = messages.length;
+            sendingData.method = method;
+            sendingData.config = config;
+            
+            updateStats();
+            renderMessageList();
+            startSending();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalCount').textContent = sendingData.totalCount;
+            document.getElementById('successCount').textContent = sendingData.successCount;
+            document.getElementById('failedCount').textContent = sendingData.failedCount;
+            document.getElementById('pendingCount').textContent = sendingData.totalCount - sendingData.currentIndex;
+            
+            const progress = sendingData.totalCount > 0 ? (sendingData.currentIndex / sendingData.totalCount) * 100 : 0;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+        
+        function renderMessageList() {
+            const listContainer = document.getElementById('sendingList');
+            listContainer.innerHTML = '';
+            
+            sendingData.messages.forEach((message, index) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-item';
+                messageDiv.id = `message-${index}`;
+                
+                let status = 'pending';
+                let statusText = 'Pending';
+                let statusIcon = '';
+                
+                if (index < sendingData.currentIndex) {
+                    status = message.sent ? 'success' : 'failed';
+                    statusText = message.sent ? 'Success' : 'Failed';
+                    statusIcon = message.sent ? '✅' : '❌';
+                } else if (index === sendingData.currentIndex && !sendingData.isPaused) {
+                    status = 'sending';
+                    statusText = 'Sending';
+                    statusIcon = '<div class="spinner"></div>';
+                }
+                
+                messageDiv.className = `message-item ${status}`;
+                messageDiv.innerHTML = `
+                    <div class="message-info">
+                        <div class="message-phone">${message.phone}</div>
+                        <div class="message-text">${message.text.substring(0, 100)}${message.text.length > 100 ? '...' : ''}</div>
+                    </div>
+                    <div class="message-status">
+                        <span class="status-badge status-${status}">${statusText}</span>
+                        <span class="status-icon">${statusIcon}</span>
+                    </div>
+                `;
+                
+                listContainer.appendChild(messageDiv);
+            });
+        }
+        
+        async function startSending() {
+            if (sendingData.currentIndex >= sendingData.totalCount) {
+                completeSending();
+                return;
+            }
+            
+            if (sendingData.isPaused) return;
+            
+            const currentMessage = sendingData.messages[sendingData.currentIndex];
+            const messageElement = document.getElementById(`message-${sendingData.currentIndex}`);
+            
+            // Update UI to show sending
+            messageElement.className = 'message-item sending';
+            messageElement.querySelector('.status-badge').textContent = 'Sending';
+            messageElement.querySelector('.status-badge').className = 'status-badge status-sending';
+            messageElement.querySelector('.status-icon').innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                let success = false;
+                
+                if (sendingData.method === 'android') {
+                    success = await sendAndroidSMS(currentMessage, sendingData.config);
+                } else if (sendingData.method === 'smtp') {
+                    success = await sendSMTPSMS(currentMessage, sendingData.config);
+                }
+                
+                // Update message status
+                sendingData.messages[sendingData.currentIndex].sent = success;
+                
+                if (success) {
+                    sendingData.successCount++;
+                    messageElement.className = 'message-item success';
+                    messageElement.querySelector('.status-badge').textContent = 'Success';
+                    messageElement.querySelector('.status-badge').className = 'status-badge status-success';
+                    messageElement.querySelector('.status-icon').innerHTML = '✅';
+                } else {
+                    sendingData.failedCount++;
+                    messageElement.className = 'message-item failed';
+                    messageElement.querySelector('.status-badge').textContent = 'Failed';
+                    messageElement.querySelector('.status-badge').className = 'status-badge status-failed';
+                    messageElement.querySelector('.status-icon').innerHTML = '❌';
+                }
+                
+            } catch (error) {
+                // Handle error
+                sendingData.failedCount++;
+                messageElement.className = 'message-item failed';
+                messageElement.querySelector('.status-badge').textContent = 'Failed';
+                messageElement.querySelector('.status-badge').className = 'status-badge status-failed';
+                messageElement.querySelector('.status-icon').innerHTML = '❌';
+            }
+            
+            sendingData.currentIndex++;
+            updateStats();
+            
+            // Scroll to current message
+            messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Continue with next message after delay
+            setTimeout(() => {
+                if (!sendingData.isPaused) {
+                    startSending();
+                }
+            }, 1000);
+        }
+        
+        async function sendAndroidSMS(message, config) {
+            try {
+                const response = await fetch('/send_android_sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gateway_url: config.gateway_url,
+                        phone_numbers: message.phone,
+                        message: message.text
+                    })
+                });
+                
+                const result = await response.json();
+                return result.success && result.total_sent > 0;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        async function sendSMTPSMS(message, config) {
+            try {
+                const response = await fetch('/send_smtp_sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        smtp_host: config.smtp_host,
+                        smtp_port: config.smtp_port,
+                        smtp_email: config.smtp_email,
+                        smtp_password: config.smtp_password,
+                        phone_numbers: message.phone,
+                        message: message.text,
+                        carrier_domain: config.carrier_domain
+                    })
+                });
+                
+                const result = await response.json();
+                return result.success && result.total_sent > 0;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        function pauseSending() {
+            sendingData.isPaused = true;
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('resumeBtn').style.display = 'inline-block';
+        }
+        
+        function resumeSending() {
+            sendingData.isPaused = false;
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+            document.getElementById('resumeBtn').style.display = 'none';
+            startSending();
+        }
+        
+        function completeSending() {
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('resumeBtn').style.display = 'none';
+            document.getElementById('viewResultsBtn').style.display = 'inline-block';
+            
+            // Show completion message
+            alert(`SMS sending completed! Success: ${sendingData.successCount}, Failed: ${sendingData.failedCount}`);
+        }
+        
+        function viewResults() {
+            window.location.href = '/sending_status';
+        }
+        
+        // Initialize from sessionStorage on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const sendingData = sessionStorage.getItem('sendingData');
+            if (sendingData) {
+                try {
+                    const data = JSON.parse(sendingData);
+                    initializeSending(data.messages, data.method, data.config);
+                    // Clear the stored data
+                    sessionStorage.removeItem('sendingData');
+                } catch (error) {
+                    console.error('Error parsing sending data:', error);
+                    alert('Error loading sending data. Redirecting to dashboard.');
+                    window.location.href = '/main_menu';
+                }
+            } else {
+                alert('No sending data found. Redirecting to dashboard.');
+                window.location.href = '/main_menu';
+            }
+        });
+    </script>
+</body>
+</html>

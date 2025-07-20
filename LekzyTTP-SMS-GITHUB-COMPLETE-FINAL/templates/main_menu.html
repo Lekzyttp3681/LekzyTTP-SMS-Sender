@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥷🏿 Lekzy-TTP 🥷🏿 - SMS Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='responsive_mobile.css') }}">
+    <style>
+        .main-container {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+        }
+        
+        .main-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .main-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .main-subtitle {
+            color: #ffffff;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        
+        .ninja-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.6); }
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .menu-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+            border-color: #00d4ff;
+        }
+        
+        .menu-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        
+        .menu-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+        
+        .menu-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .menu-btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .menu-btn:hover {
+            background: linear-gradient(45deg, #0099cc, #007399);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .logout-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .logout-btn:hover {
+            background: linear-gradient(45deg, #ee5a52, #e04848);
+            transform: translateY(-2px);
+        }
+        
+        .footer-info {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .footer-info p {
+            color: #ffffff;
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        
+        .footer-info strong {
+            color: #00d4ff;
+        }
+        
+        /* Popup Advertisement Styles */
+        .popup-ad {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 25px;
+            z-index: 9999;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            text-align: center;
+            min-width: 300px;
+            max-width: 90vw;
+        }
+        .popup-ad h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .popup-ad p {
+            color: #fff;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9998;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="main-header">
+            <div class="ninja-icon">🥷🏿</div>
+            <h1 class="main-title">🥷🏿 Lekzy-TTP 🥷🏿</h1>
+            <p class="main-subtitle">SMS Command Center</p>
+        </div>
+        
+        <div class="menu-grid">
+            <div class="menu-card" onclick="location.href='/android-config'">
+                <div class="menu-icon">📱</div>
+                <h3 class="menu-title">Android SMS Gateway</h3>
+                <p class="menu-description">Send SMS through Android device gateway. Fast and reliable local network messaging.</p>
+                <a href="/android-config" class="menu-btn">Configure Android Gateway</a>
+            </div>
+            
+            <div class="menu-card" onclick="location.href='/smtp-config'">
+                <div class="menu-icon">📧</div>
+                <h3 class="menu-title">SMTP to SMS Gateway</h3>
+                <p class="menu-description">Send SMS via email-to-SMS carrier gateways. Works with major US carriers.</p>
+                <a href="/smtp-config" class="menu-btn">Configure SMTP Gateway</a>
+            </div>
+        </div>
+        
+        <div class="user-info" style="text-align: center; margin: 30px 0;">
+            <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 20px; max-width: 500px; margin: 0 auto;">
+                <h3 style="color: #00d4ff; margin-bottom: 15px;">Welcome, {{ username }}! 🥷🏿</h3>
+                <p style="color: #ffffff; opacity: 0.9; margin-bottom: 15px;">You've sent <strong style="color: #00d4ff;">{{ user_sms_count }}</strong> SMS messages</p>
+                <a href="/user-activity" class="menu-btn" style="background: linear-gradient(45deg, #00d4ff, #0099cc); margin-right: 10px;">📊 View My Activity</a>
+            </div>
+        </div>
+        
+        <div class="logout-container">
+            <a href="/logout" class="logout-btn">🚪 Logout</a>
+        </div>
+        
+        <div class="footer-info">
+            <p><strong>Telegram:</strong> @Lekzy_ttp</p>
+            <p><em>"What's so ever it's GOD is Capable and Greater"</em></p>
+        </div>
+    </div>
+
+    <script>
+        // Show popup advertisement on every page load
+        function showPopupAd() {
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.onclick = closePopupAd;
+
+            const popup = document.createElement('div');
+            popup.className = 'popup-ad';
+            popup.innerHTML = `
+                <h3>🥷🏿 Special Offer - Lekzy-TTP Services 🥷🏿</h3>
+                <p><strong>💲 Premium tulz and services</strong></p>
+                <p><strong>Logs, Tulz & Box ar avail 4 zel!💲</strong></p>
+                <p>HMU me4 Enityn💰💻<br>
+                📱 Contact via Telegram above<br>
+                🔥 Limited time offer</p>
+                <button onclick="closePopupAd()" class="menu-btn" style="margin: 5px;">Close</button>
+                <button onclick="contactTelegram()" class="menu-btn" style="background: #00d4ff; margin: 5px;">Contact Now</button>
+            `;
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+        }
+
+        function closePopupAd() {
+            const overlay = document.querySelector('.popup-overlay');
+            const popup = document.querySelector('.popup-ad');
+            if (overlay) overlay.remove();
+            if (popup) popup.remove();
+        }
+
+        function contactTelegram() {
+            window.open('https://t.me/Lekzy_ttp', '_blank');
+            closePopupAd();
+        }
+
+        // Show popup every 30 minutes
+        function shouldShowPopup() {
+            const lastShown = localStorage.getItem('lekzy_popup_last_shown');
+            const now = Date.now();
+            const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
+            
+            if (!lastShown || (now - parseInt(lastShown)) > thirtyMinutes) {
+                localStorage.setItem('lekzy_popup_last_shown', now.toString());
+                return true;
+            }
+            return false;
+        }
+
+        // Show popup after 2 seconds if it's time
+        setTimeout(() => {
+            if (shouldShowPopup()) {
+                showPopupAd();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
