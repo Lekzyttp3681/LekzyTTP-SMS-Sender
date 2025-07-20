@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lekzy-TTP SMS Sender - SMTP Message</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/smtp_sms" class="btn btn-secondary back-btn">← Back to Config</a>
+    
+    <div class="container">
+        <div class="header">
+            <div class="app-title">SMTP TO SMS MESSAGE</div>
+            <div class="subtitle">Step 2: Create and Send Messages</div>
+            <div class="branding">
+                <div class="telegram">Telegram: Lekzy_ttp</div>
+                <div class="motto">"Whatsoever it is – GOD is Capable and Greater"</div>
+            </div>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="success" class="success" style="display: none;"></div>
+
+        <div class="card">
+            <h3 style="color: #5cb85c; margin-bottom: 15px;">📧 Configuration Summary</h3>
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <strong>SMTP Host:</strong> <span style="color: #5cb85c;">{{ config.smtp_host }}:{{ config.smtp_port }}</span><br>
+                <strong>Email:</strong> <span style="color: #5cb85c;">{{ config.smtp_email }}</span><br>
+                <strong>Configured:</strong> <span style="color: #999;">{{ config.timestamp[:19] }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: #5cb85c; margin-bottom: 20px;">✉️ Message & Recipients</h3>
+            
+            <form id="smtp-message-form">
+                <div class="form-group">
+                    <label for="carrier" class="form-label">Select U.S. Carrier:</label>
+                    <select id="carrier" class="form-select" required>
+                        <option value="">-- Select Carrier --</option>
+                        {% for name, domain in carriers.items() %}
+                        <option value="{{ domain }}">{{ name }} ({{ domain }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message" class="form-label">SMS Message:</label>
+                    <textarea id="message" 
+                              class="form-input form-textarea" 
+                              placeholder="Enter your SMS message here..."
+                              maxlength="160"
+                              required></textarea>
+                    <small style="color: #999; font-size: 0.9em;">
+                        <span id="char-count">0</span>/160 characters
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone_numbers" class="form-label">Phone Numbers (Bulk):</label>
+                    <textarea id="phone_numbers" 
+                              class="form-input form-textarea" 
+                              placeholder="Enter phone numbers (one per line or comma-separated)&#10;1234567890&#10;2345678901&#10;3456789012"
+                              required></textarea>
+                    <small style="color: #999; font-size: 0.9em;">
+                        <span id="number-count">0 numbers</span> | Will be sent to: <span id="preview-domain">@[carrier]</span>
+                    </small>
+                </div>
+                
+                <button type="button" onclick="sendSMTPSMS()" class="btn btn-primary btn-block">
+                    📧 Send SMTP to SMS
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div>📡 Sending SMS via Email Gateway...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: #5cb85c; margin-bottom: 15px;">📊 Current Statistics</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="sent-count">0</div>
+                    <div class="stat-label">Messages Sent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="failed-count">0</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-count">0</div>
+                    <div class="stat-label">Total Processed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="branding">
+            <div class="telegram">Telegram: Lekzy_ttp</div>
+            <div class="motto">"Whatsoever it is – GOD is Capable and Greater"</div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    <script>
+        // Enhanced SMTP SMS sending with redirect
+        async function sendSMTPSMS() {
+            const message = document.getElementById('message').value.trim();
+            const phoneNumbers = document.getElementById('phone_numbers').value.trim();
+            const carrierDomain = document.getElementById('carrier').value;
+            
+            if (!message || !phoneNumbers || !carrierDomain) {
+                showError('Please fill in all fields and select a carrier');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/send_smtp_sms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        smtp_host: '{{ config.smtp_host }}',
+                        smtp_port: '{{ config.smtp_port }}',
+                        smtp_email: '{{ config.smtp_email }}',
+                        smtp_password: '{{ config.smtp_password }}',
+                        message: message,
+                        phone_numbers: phoneNumbers,
+                        carrier_domain: carrierDomain
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(`SMS sending completed! ${result.message}`);
+                    updateStats(result.total_sent, result.total_failed);
+                    
+                    // Redirect to status page after a short delay
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 2000);
+                } else {
+                    showError(result.error || 'Failed to send SMS');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Character counter for message
+        document.getElementById('message').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('char-count').textContent = count;
+            
+            if (count > 160) {
+                this.style.borderColor = '#d9534f';
+            } else if (count > 140) {
+                this.style.borderColor = '#f0ad4e';
+            } else {
+                this.style.borderColor = '#555';
+            }
+        });
+        
+        // Phone number counter and carrier preview
+        function updateNumberInfo() {
+            const numbers = document.getElementById('phone_numbers').value.split(/[\n,]/)
+                .map(n => n.trim())
+                .filter(n => n.length > 0);
+            
+            document.getElementById('number-count').textContent = `${numbers.length} numbers`;
+            
+            const selectedCarrier = document.getElementById('carrier');
+            const domain = selectedCarrier.value || '[carrier]';
+            document.getElementById('preview-domain').textContent = `@${domain}`;
+        }
+        
+        document.getElementById('phone_numbers').addEventListener('input', updateNumberInfo);
+        document.getElementById('carrier').addEventListener('change', updateNumberInfo);
+        
+        // Auto-format phone numbers on blur
+        document.getElementById('phone_numbers').addEventListener('blur', function() {
+            const lines = this.value.split('\n');
+            const formatted = lines.map(line => {
+                if (line.includes(',')) {
+                    return line.split(',').map(n => n.trim().replace(/\D/g, '')).join(', ');
+                } else {
+                    return line.trim().replace(/\D/g, '');
+                }
+            }).filter(line => line.length > 0);
+            
+            this.value = formatted.join('\n');
+            updateNumberInfo();
+        });
+        
+        // Load saved form data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFormData('smtp-message-form');
+            updateNumberInfo();
+        });
+    </script>
+
+    <style>
+        .subtitle {
+            color: #cccccc;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+        }
+        
+        #phone_numbers {
+            min-height: 120px;
+        }
+        
+        #preview-domain {
+            color: #5cb85c;
+            font-weight: 500;
+        }
+    </style>
+</body>
+</html>

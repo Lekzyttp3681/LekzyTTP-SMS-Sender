@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Lekzy-TTP SMS Sender</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="brand">
+                <h1>🔐 Admin Panel</h1>
+                <p>Lekzy-TTP SMS Sender</p>
+            </div>
+            
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+            
+            <form action="/lekzy-admin-panel-secret/login" method="POST" class="admin-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn">Login to Admin Panel</button>
+            </form>
+            
+            <div class="footer">
+                <p><strong>Telegram:</strong> @Lekzy_ttp</p>
+                <p><em>"Whatsoever it is – GOD is Capable and Greater"</em></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
