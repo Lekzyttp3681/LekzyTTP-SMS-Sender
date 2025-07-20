@@ -10,13 +10,15 @@ class Database:
     def __init__(self):
         self.database_url = os.getenv('DATABASE_URL')
         if not self.database_url:
-            # Fallback for local development
             self.database_url = 'postgresql://localhost/lekzy_sms'
         
     def get_connection(self):
         return psycopg2.connect(self.database_url)
     
     def init_db(self):
+        """Initialize database tables"""
+        with self.get_connection() as conn:(self):
+            
         """Initialize database tables"""
         with self.get_connection() as conn:
             with conn.cursor() as cur:
