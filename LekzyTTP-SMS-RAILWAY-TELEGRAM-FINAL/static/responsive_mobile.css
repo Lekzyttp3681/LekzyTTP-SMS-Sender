@@ -1,0 +1,386 @@
+/* COMPREHENSIVE RESPONSIVE CSS FOR ALL DEVICES */
+
+/* === MOBILE PHONE OPTIMIZATIONS (320px - 480px) === */
+@media (max-width: 480px) {
+    /* Base container adjustments */
+    .main-container, .container {
+        padding: 10px !important;
+        margin: 5px !important;
+    }
+    
+    /* Typography scaling */
+    .main-title, .page-title {
+        font-size: 1.8rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .main-subtitle, .page-subtitle {
+        font-size: 1rem !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* Card and form optimizations */
+    .card, .menu-card {
+        padding: 15px !important;
+        margin-bottom: 15px !important;
+        border-radius: 15px !important;
+    }
+    
+    .form-group {
+        margin-bottom: 15px !important;
+    }
+    
+    .form-input, .form-control, .form-textarea {
+        padding: 14px !important;
+        font-size: 16px !important; /* Prevents iOS zoom */
+        border-radius: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Button optimizations - 44px minimum touch target */
+    .btn, .menu-btn, button {
+        padding: 14px 20px !important;
+        font-size: 0.9rem !important;
+        margin: 8px 4px !important;
+        min-height: 44px !important;
+        min-width: 44px !important;
+        border-radius: 10px !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* Grid layouts - single column */
+    .menu-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    
+    .stats {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    
+    .progress-stats {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+    
+    /* Statistics cards */
+    .stat-card {
+        padding: 12px !important;
+        text-align: center !important;
+    }
+    
+    .stat-number {
+        font-size: 1.4rem !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Table responsiveness */
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    table {
+        font-size: 0.8rem !important;
+        width: 100% !important;
+    }
+    
+    th, td {
+        padding: 8px 4px !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Modal and popup adjustments */
+    .modal, .popup-ad {
+        width: 95% !important;
+        margin: 10px auto !important;
+        padding: 15px !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Navigation improvements */
+    .back-btn {
+        margin-bottom: 15px !important;
+        width: auto !important;
+    }
+    
+    /* Progress page mobile optimizations */
+    .sending-list {
+        max-height: 300px !important;
+        overflow-y: auto !important;
+    }
+    
+    .message-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        padding: 12px !important;
+    }
+    
+    .message-status {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+    
+    .message-text {
+        max-width: 100% !important;
+        word-break: break-word !important;
+    }
+    
+    /* Admin panel mobile fixes */
+    .admin-controls {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .admin-controls .btn {
+        width: 100% !important;
+        margin: 5px 0 !important;
+    }
+}
+
+/* === TABLET PORTRAIT (481px - 768px) === */
+@media (min-width: 481px) and (max-width: 768px) {
+    .main-container, .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .main-title, .page-title {
+        font-size: 2.2rem;
+    }
+    
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .progress-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+    
+    table {
+        font-size: 0.9rem;
+    }
+    
+    th, td {
+        padding: 10px 8px;
+    }
+}
+
+/* === TABLET LANDSCAPE (769px - 1024px) === */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+    
+    .stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    
+    .progress-stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+}
+
+/* === DESKTOP & LAPTOP (1025px+) === */
+@media (min-width: 1025px) {
+    .main-container, .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
+    
+    .progress-stats {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+    }
+    
+    /* Hover effects for desktop */
+    .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* === ULTRA-WIDE SCREENS (1440px+) === */
+@media (min-width: 1440px) {
+    .main-container, .container {
+        max-width: 1400px;
+    }
+    
+    .menu-grid {
+        max-width: 1200px;
+    }
+}
+
+/* === ACCESSIBILITY & MODERN WEB STANDARDS === */
+
+/* Touch-friendly elements */
+@media (pointer: coarse) {
+    .btn, button, a, input, select, textarea {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Larger tap targets */
+    .menu-card {
+        min-height: 120px;
+    }
+    
+    /* Better touch scrolling */
+    .table-responsive, .sending-list {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card, .menu-card, .stat-card {
+        border: 2px solid #ffffff !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+    }
+    
+    .btn {
+        border: 2px solid #ffffff !important;
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .menu-card:hover, .btn:hover {
+        transform: none !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .btn, .menu-btn, .back-btn, .admin-controls {
+        display: none !important;
+    }
+    
+    .main-container {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .card, .menu-card {
+        border: 1px solid #000 !important;
+        background: white !important;
+        page-break-inside: avoid;
+    }
+    
+    .main-title {
+        color: #000 !important;
+        text-shadow: none !important;
+    }
+}
+
+/* === UTILITY CLASSES === */
+.responsive-text {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    line-height: 1.5;
+}
+
+.responsive-heading {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    line-height: 1.2;
+}
+
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.mobile-hidden {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .mobile-hidden {
+        display: none !important;
+    }
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block !important;
+    }
+}
+
+/* === PERFORMANCE OPTIMIZATIONS === */
+.card, .menu-card {
+    will-change: transform;
+    transform: translateZ(0); /* GPU acceleration */
+}
+
+.btn {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Smooth scrolling where appropriate */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
