@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lekzy-TTP SMS Sender - Main Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="app-title">LEKZY-TTP</div>
+            <div class="subtitle">SMS Sender System</div>
+            <div class="branding">
+                <div class="telegram">Telegram: Lekzy_ttp</div>
+                <div class="motto">"Whatsoever it is – GOD is Capable and Greater"</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #5cb85c;">Select SMS Sending Method</h2>
+            
+            <div class="menu-buttons">
+                <a href="/android_sms" class="menu-btn">
+                    <div style="font-size: 2em; margin-bottom: 10px;">📱</div>
+                    <div>ANDROID SMS</div>
+                    <div style="font-size: 0.9em; color: #999; margin-top: 5px;">(SIM CARD)</div>
+                </a>
+                
+                <a href="/smtp_sms" class="menu-btn">
+                    <div style="font-size: 2em; margin-bottom: 10px;">📧</div>
+                    <div>SMTP TO SMS</div>
+                    <div style="font-size: 0.9em; color: #999; margin-top: 5px;">(EMAIL GATEWAY)</div>
+                </a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color: #5cb85c; margin-bottom: 15px;">System Information</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="session-time">--</div>
+                    <div class="stat-label">Session Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">✅</div>
+                    <div class="stat-label">Status: Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">SMS Methods</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="branding">
+            <div class="telegram">Telegram: Lekzy_ttp</div>
+            <div class="motto">"Whatsoever it is – GOD is Capable and Greater"</div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    <script>
+        // Update session timer
+        let sessionStart = Date.now();
+        function updateSessionTime() {
+            const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('session-time').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        setInterval(updateSessionTime, 1000);
+        updateSessionTime();
+    </script>
+
+    <style>
+        .subtitle {
+            color: #cccccc;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</body>
+</html>
