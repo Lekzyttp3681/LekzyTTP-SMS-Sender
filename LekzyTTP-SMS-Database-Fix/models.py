@@ -17,7 +17,7 @@ class Database:
     
     def init_db(self):
         """Initialize database tables"""
-        with self.get_connection() as conn:(self):
+        with self.get_connection() as conn:
             
         """Initialize database tables"""
         with self.get_connection() as conn:
