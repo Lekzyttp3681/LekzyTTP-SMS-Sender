@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥷🏿 Lekzy-TTP 🥷🏿 - Admin Access</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .admin-container {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .admin-form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 400px;
+        }
+        
+        .admin-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .admin-subtitle {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+        
+        .admin-form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .admin-label {
+            color: #00d4ff;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .admin-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .admin-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .admin-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .admin-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .admin-btn:hover {
+            background: linear-gradient(45deg, #0099cc, #007399);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+        
+        .admin-error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .ninja-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.6); }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-form-container">
+            <div class="ninja-icon">🥷🏿</div>
+            <h1 class="admin-title">🥷🏿 Lekzy-TTP 🥷🏿</h1>
+            <p class="admin-subtitle">What's so ever it's GOD is Capable and Greater</p>
+            
+            {% if error %}
+                <div class="admin-error">{{ error }}</div>
+            {% endif %}
+            
+            <form action="/ttpadmin/login" method="post">
+                <div class="admin-form-group">
+                    <label for="username" class="admin-label">👤 Admin ID:</label>
+                    <input type="text" id="username" name="username" class="admin-input" placeholder="Admin" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="password" class="admin-label">🔐 Secret Key:</label>
+                    <input type="password" id="password" name="password" class="admin-input" placeholder="Enter your secret key" required>
+                </div>
+                
+                <button type="submit" class="admin-btn">🚀 ACCESS CONTROL PANEL</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
